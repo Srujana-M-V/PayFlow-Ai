@@ -25,7 +25,7 @@
 ## Database
 
 | Requirement | Technology |
-|---|---|
+|---       |---         |
 | Database | PostgreSQL |
 | ORM | Django ORM |
 | Tenant Isolation | Logical Tenant Isolation |

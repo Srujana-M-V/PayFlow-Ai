@@ -2,7 +2,6 @@
 
 ## High-Level System Architecture
 
-```text
                          +----------------------+
                          |    React Frontend    |
                          |  Dashboard / UI      |
