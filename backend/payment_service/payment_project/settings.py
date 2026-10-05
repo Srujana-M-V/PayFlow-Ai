@@ -48,6 +48,8 @@ INSTALLED_APPS = [
     'fraud_scores',
     'settlement_files',
     'reconciliation_records',
+    'webhook_configs',
+    'audit_logs',
 ]
 
 MIDDLEWARE = [
