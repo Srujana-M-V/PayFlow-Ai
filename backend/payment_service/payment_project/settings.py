@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     "gateway_health",
     "transactions",
     'fraud_scores',
+    'settlement_files',
 ]
 
 MIDDLEWARE = [
