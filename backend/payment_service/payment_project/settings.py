@@ -47,6 +47,7 @@ INSTALLED_APPS = [
     "transactions",
     'fraud_scores',
     'settlement_files',
+    'reconciliation_records',
 ]
 
 MIDDLEWARE = [
