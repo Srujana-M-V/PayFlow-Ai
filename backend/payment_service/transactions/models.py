@@ -54,5 +54,14 @@ class Transaction(models.Model):
     initiated_at = models.DateTimeField(auto_now_add=True)
     completed_at = models.DateTimeField(null=True, blank=True)
 
+    class Meta:
+        indexes = [
+            models.Index(fields=["organization_id"]),
+            models.Index(fields=["status"]),
+            models.Index(fields=["gateway_used"]),
+            models.Index(fields=["initiated_at"]),
+        ]
+
     def __str__(self):
         return self.order_id
+
