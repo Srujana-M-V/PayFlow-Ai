@@ -13,9 +13,12 @@ class MerchantListCreateView(APIView):
     permission_classes = [IsSuperAdminOrMerchantAdmin]
 
     def get(self, request):
-        organizations = Organization.objects.filter(
-            id=request.user.organization_id
-        ).order_by("-created_at")
+        if request.user.role == "SUPER_ADMIN":
+            organizations = Organization.objects.all().order_by("-created_at")
+        else:
+            organizations = Organization.objects.filter(
+                id=request.user.organization_id
+            ).order_by("-created_at")
 
         serializer = OrganizationSerializer(organizations, many=True)
 
@@ -46,21 +49,19 @@ class MerchantDetailView(APIView):
 
     def get(self, request, organization_id):
         try:
-            organization = Organization.objects.get(
-                id=organization_id
-            )
-
-            if request.user.organization_id != organization.id:
-                return Response(
-                    {"detail": "You do not have access to this organization."},
-                    status=status.HTTP_403_FORBIDDEN,
-                )
-
+            organization = Organization.objects.get(id=organization_id)
         except Organization.DoesNotExist:
             return Response(
                 {"detail": "Organization not found."},
                 status=status.HTTP_404_NOT_FOUND,
             )
+
+        if request.user.role != "SUPER_ADMIN":
+            if request.user.organization_id != organization.id:
+                return Response(
+                    {"detail": "You do not have access to this organization."},
+                    status=status.HTTP_403_FORBIDDEN,
+                )
 
         return Response(
             OrganizationSerializer(organization).data,
