@@ -39,6 +39,13 @@ class LoginView(APIView):
             user = serializer.validated_data["user"]
 
             refresh_token = RefreshToken.for_user(user)
+            refresh_token["organization_id"] = (
+                str(user.organization.organization_uuid)
+                if user.organization_id
+                else None
+            )
+            refresh_token["role"] = user.role
+
             access_token = refresh_token.access_token
 
             return Response(

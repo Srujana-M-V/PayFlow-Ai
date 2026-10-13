@@ -50,6 +50,8 @@ INSTALLED_APPS = [
     'reconciliation_records',
     'webhook_configs',
     'audit_logs',
+    "rest_framework",
+    "rest_framework_simplejwt",
 ]
 
 MIDDLEWARE = [
@@ -141,4 +143,25 @@ MAILERS = {
     'default': {
         'BACKEND': 'django.core.mail.backends.console.EmailBackend',
     },
+}
+REST_FRAMEWORK = {
+    "DEFAULT_AUTHENTICATION_CLASSES": [
+        "payment_project.authentication.GatewayJWTAuthentication",
+    ],
+    "DEFAULT_PERMISSION_CLASSES": [
+        "rest_framework.permissions.IsAuthenticated",
+    ],
+}
+
+from datetime import timedelta
+
+JWT_SIGNING_KEY = os.getenv("JWT_SIGNING_KEY")
+
+SIMPLE_JWT = {
+    "ALGORITHM": "HS256",
+    "SIGNING_KEY": JWT_SIGNING_KEY,
+    "VERIFYING_KEY": "",
+    "AUDIENCE": None,
+    "ISSUER": None,
+    "LEEWAY": 0,
 }

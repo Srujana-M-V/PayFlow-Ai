@@ -1,3 +1,4 @@
+
 from rest_framework.permissions import BasePermission
 
 
@@ -23,7 +24,7 @@ class IsTenantUser(BasePermission):
         organization_id = getattr(obj, "organization_id", None)
 
         if organization_id is None and hasattr(obj, "organization"):
-            organization_id = obj.organization_id
+            organization_id = getattr(obj.organization, "id", None)
 
         return (
             user.organization_id is not None
@@ -45,7 +46,7 @@ class IsSameTenant(BasePermission):
         organization_id = getattr(obj, "organization_id", None)
 
         if organization_id is None and hasattr(obj, "organization"):
-            organization_id = obj.organization_id
+            organization_id = getattr(obj.organization, "id", None)
 
         return (
             request.user.organization_id is not None
