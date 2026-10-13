@@ -1,3 +1,4 @@
+
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -28,6 +29,12 @@ class MerchantListCreateView(APIView):
         )
 
     def post(self, request):
+        if request.user.role != "SUPER_ADMIN":
+            return Response(
+                {"detail": "Only super admins can create organizations."},
+                status=status.HTTP_403_FORBIDDEN,
+            )
+
         serializer = OrganizationSerializer(data=request.data)
 
         if serializer.is_valid():
@@ -48,20 +55,21 @@ class MerchantDetailView(APIView):
     permission_classes = [IsTenantUser]
 
     def get(self, request, organization_id):
-        try:
-            organization = Organization.objects.get(id=organization_id)
-        except Organization.DoesNotExist:
+        if request.user.role == "SUPER_ADMIN":
+            organization = Organization.objects.filter(
+                id=organization_id
+            ).first()
+        else:
+            organization = Organization.objects.filter(
+                id=organization_id,
+                users__id=request.user.id,
+            ).first()
+
+        if organization is None:
             return Response(
-                {"detail": "Organization not found."},
+                {"detail": "Organization not found or access denied."},
                 status=status.HTTP_404_NOT_FOUND,
             )
-
-        if request.user.role != "SUPER_ADMIN":
-            if request.user.organization_id != organization.id:
-                return Response(
-                    {"detail": "You do not have access to this organization."},
-                    status=status.HTTP_403_FORBIDDEN,
-                )
 
         return Response(
             OrganizationSerializer(organization).data,

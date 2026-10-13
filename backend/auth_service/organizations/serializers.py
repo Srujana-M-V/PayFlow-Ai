@@ -1,3 +1,4 @@
+
 from rest_framework import serializers
 
 from .models import Organization
@@ -16,6 +17,7 @@ class OrganizationSerializer(serializers.ModelSerializer):
         ]
         read_only_fields = [
             "id",
+            "is_active",
             "created_at",
             "updated_at",
         ]
