@@ -1,4 +1,3 @@
-
 """
 Django settings for auth_project project.
 """
@@ -128,7 +127,12 @@ SIMPLE_JWT = {
 }
 
 LOGIN_URL = "/api/auth/browser-login/"
+
 OAUTH2_PROVIDER = {
     "PKCE_REQUIRED": True,
     "AUTHORIZATION_CODE_EXPIRE_SECONDS": 300,
 }
+
+SECURE_CONTENT_TYPE_NOSNIFF = True
+SECURE_REFERRER_POLICY = "same-origin"
+X_FRAME_OPTIONS = "DENY"
