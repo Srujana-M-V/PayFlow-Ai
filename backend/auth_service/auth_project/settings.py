@@ -1,3 +1,4 @@
+
 """
 Django settings for auth_project project.
 """
@@ -12,7 +13,6 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 load_dotenv(BASE_DIR.parent.parent / ".env")
 
-
 SECRET_KEY = os.getenv(
     "DJANGO_SECRET_KEY",
     "django-insecure-local-development-key-change-before-production",
@@ -24,7 +24,6 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
-
 INSTALLED_APPS = [
     "django.contrib.admin",
     "django.contrib.auth",
@@ -34,12 +33,12 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "organizations",
     "users",
+    "rest_framework",
     "rest_framework_simplejwt.token_blacklist",
+    "oauth2_provider",
 ]
 
-
 AUTH_USER_MODEL = "users.User"
-
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
@@ -51,9 +50,7 @@ MIDDLEWARE = [
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
 
-
 ROOT_URLCONF = "auth_project.urls"
-
 
 TEMPLATES = [
     {
@@ -70,9 +67,7 @@ TEMPLATES = [
     },
 ]
 
-
 WSGI_APPLICATION = "auth_project.wsgi.application"
-
 
 DATABASES = {
     "default": {
@@ -84,7 +79,6 @@ DATABASES = {
         "PORT": "5432",
     }
 }
-
 
 AUTH_PASSWORD_VALIDATORS = [
     {
@@ -101,7 +95,6 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
 LANGUAGE_CODE = "en-us"
 
 TIME_ZONE = "UTC"
@@ -110,9 +103,7 @@ USE_I18N = True
 
 USE_TZ = True
 
-
 STATIC_URL = "static/"
-
 
 MAILERS = {
     "default": {
@@ -120,13 +111,13 @@ MAILERS = {
     },
 }
 
-
 REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": (
+        "oauth2_provider.contrib.rest_framework.OAuth2Authentication",
         "rest_framework_simplejwt.authentication.JWTAuthentication",
+        "rest_framework.authentication.SessionAuthentication",
     ),
 }
-
 
 SIMPLE_JWT = {
     "ACCESS_TOKEN_LIFETIME": timedelta(minutes=30),
@@ -134,4 +125,10 @@ SIMPLE_JWT = {
     "ROTATE_REFRESH_TOKENS": True,
     "BLACKLIST_AFTER_ROTATION": True,
     "SIGNING_KEY": JWT_SIGNING_KEY,
+}
+
+LOGIN_URL = "/api/auth/browser-login/"
+OAUTH2_PROVIDER = {
+    "PKCE_REQUIRED": True,
+    "AUTHORIZATION_CODE_EXPIRE_SECONDS": 300,
 }

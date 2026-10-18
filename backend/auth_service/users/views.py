@@ -1,3 +1,9 @@
+from django.contrib.auth import authenticate, login
+from django.shortcuts import render, redirect
+from django.utils.decorators import method_decorator
+from django.views import View
+from django.views.decorators.csrf import csrf_protect
+
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
@@ -14,7 +20,6 @@ class RegistrationView(APIView):
 
         if serializer.is_valid():
             user = serializer.save()
-
             return Response(
                 {
                     "message": "User registered successfully",
@@ -100,11 +105,61 @@ class ProtectedView(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request):
+        authenticator = request.successful_authenticator
+        module = (
+            authenticator.__class__.__module__
+            if authenticator
+            else ""
+        )
+
+        if module.startswith("oauth2_provider"):
+            authentication_method = "OAuth2"
+        elif module.startswith("rest_framework_simplejwt"):
+            authentication_method = "JWT"
+        else:
+            authentication_method = "Session"
+
         return Response(
             {
-                "message": "JWT authentication successful.",
+                "message": "Authentication successful.",
+                "authentication_method": authentication_method,
                 "user_id": request.user.id,
                 "username": request.user.username,
             },
             status=status.HTTP_200_OK,
         )
+
+
+class OAuthBrowserLoginView(View):
+    template_name = "users/oauth_login.html"
+
+    @method_decorator(csrf_protect)
+    def get(self, request):
+        return render(request, self.template_name)
+
+    @method_decorator(csrf_protect)
+    def post(self, request):
+        username = request.POST.get("username", "").strip()
+        password = request.POST.get("password", "")
+
+        user = authenticate(
+            request,
+            username=username,
+            password=password,
+        )
+
+        if user is None or not user.is_active:
+            return render(
+                request,
+                self.template_name,
+                {"error": "Invalid username or password."},
+                status=400,
+            )
+
+        login(request, user)
+        next_url = request.GET.get("next") or request.POST.get("next")
+
+        if next_url and next_url.startswith("/") and not next_url.startswith("//"):
+            return redirect(next_url)
+
+        return redirect("/api/auth/protected/")
