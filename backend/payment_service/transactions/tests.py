@@ -1,5 +1,8 @@
+from datetime import timedelta
+
 from django.test import TestCase
-from rest_framework.test import APIRequestFactory, force_authenticate
+from rest_framework.test import APIClient, APIRequestFactory, force_authenticate
+from rest_framework_simplejwt.tokens import AccessToken
 
 from payment_project.authentication import GatewayUser
 from transactions.models import Transaction
@@ -45,3 +48,24 @@ class TransactionTenantIsolationTests(TestCase):
             response.data[0]["order_id"],
             "TENANT5-AUTO-TEST",
         )
+
+    def test_invalid_jwt_is_rejected(self):
+        client = APIClient()
+        client.credentials(HTTP_AUTHORIZATION="Bearer invalid-token")
+
+        response = client.get("/api/transactions/")
+
+        self.assertEqual(response.status_code, 401)
+
+    def test_expired_jwt_is_rejected(self):
+        token = AccessToken()
+        token.set_exp(lifetime=timedelta(seconds=-10))
+
+        client = APIClient()
+        client.credentials(
+            HTTP_AUTHORIZATION=f"Bearer {str(token)}"
+        )
+
+        response = client.get("/api/transactions/")
+
+        self.assertEqual(response.status_code, 401)

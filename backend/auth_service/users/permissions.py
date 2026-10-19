@@ -6,7 +6,22 @@ class IsSuperAdminOrMerchantAdmin(BasePermission):
         "SUPER_ADMIN",
         "MERCHANT_ADMIN",
     }
+
+    def has_permission(self, request, view):
+        user = request.user
+
+        return (
+            user
+            and user.is_authenticated
+            and user.role in self.allowed_roles
+        )
+
+
 class HasTenantAccess(BasePermission):
+    def has_permission(self, request, view):
+        user = request.user
+        return user and user.is_authenticated
+
     def has_object_permission(self, request, view, obj):
         user = request.user
 
@@ -21,11 +36,4 @@ class HasTenantAccess(BasePermission):
         return (
             user.organization_id is not None
             and str(user.organization_id) == str(organization_id)
-        )
-    
-    def has_permission(self, request, view):
-        return (
-            request.user
-            and request.user.is_authenticated
-            and request.user.role in self.allowed_roles
         )

@@ -94,3 +94,19 @@ class TenantIsolationTests(TestCase):
         self.assertTrue(
             Organization.objects.filter(slug="new-merchant").exists()
         )
+    def test_merchant_can_list_only_own_organization(self):
+        self.client.force_authenticate(user=self.merchant)
+
+        response = self.client.get("/api/organizations/merchants/")
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.data), 1)
+        self.assertEqual(response.data[0]["id"], self.org1.id)
+
+    def test_super_admin_can_list_all_organizations(self):
+        self.client.force_authenticate(user=self.super_admin)
+
+        response = self.client.get("/api/organizations/merchants/")
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.data), 2)
