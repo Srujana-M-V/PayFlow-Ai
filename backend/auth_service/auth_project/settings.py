@@ -142,6 +142,9 @@ REST_FRAMEWORK = {
         "anon": "20/min",
         "user": "100/min",
     },
+    "EXCEPTION_HANDLER": (
+        "auth_project.exceptions.custom_exception_handler"
+    ),
 }
 
 SIMPLE_JWT = {
