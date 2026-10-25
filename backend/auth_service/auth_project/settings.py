@@ -13,12 +13,15 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 load_dotenv(BASE_DIR.parent.parent / ".env")
 
-SECRET_KEY = os.getenv(
-    "DJANGO_SECRET_KEY",
-    "django-insecure-local-development-key-change-before-production",
-)
+SECRET_KEY = os.getenv("DJANGO_SECRET_KEY")
+
+if not SECRET_KEY:
+    raise RuntimeError("DJANGO_SECRET_KEY is missing from .env")
 
 JWT_SIGNING_KEY = os.getenv("JWT_SIGNING_KEY")
+
+if not JWT_SIGNING_KEY:
+    raise RuntimeError("JWT_SIGNING_KEY is missing from .env")
 
 DEBUG = True
 
