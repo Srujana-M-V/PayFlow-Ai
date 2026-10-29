@@ -80,7 +80,7 @@ DATABASES = {
         "NAME": "payflow_ai",
         "USER": "postgres",
         "PASSWORD": os.getenv("POSTGRES_PASSWORD"),
-        "HOST": "localhost",
+        "HOST": os.getenv("DB_HOST", "localhost"),
         "PORT": "5432",
     }
 }
