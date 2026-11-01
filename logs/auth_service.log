@@ -3,3 +3,4 @@ WARNING 2026-10-25 09:03:14,444 django.request Not Found: /api/organizations/mer
 WARNING 2026-10-25 09:03:16,173 django.request Forbidden: /api/organizations/create/
 WARNING 2026-10-25 09:40:43,562 django.request Not Found: /api/organizations/merchants/6/
 WARNING 2026-10-25 09:40:45,280 django.request Forbidden: /api/organizations/create/
+INFO 2026-11-01 12:54:30,552 django.utils.autoreload Watching for file changes with StatReloader
