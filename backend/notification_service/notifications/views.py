@@ -30,7 +30,7 @@ class NotificationListCreateView(generics.ListCreateAPIView):
 
         serializer.save(
             organization_id=user.organization_id,
-            user_id=user.id,
+            user_id=None,
         )
 
 
