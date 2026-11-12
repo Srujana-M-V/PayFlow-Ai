@@ -18,7 +18,8 @@ class MerchantListCreateView(APIView):
             organizations = Organization.objects.all().order_by("-created_at")
         else:
             organizations = Organization.objects.filter(
-                id=request.user.organization_id
+                id=request.user.organization_id,
+                is_active=True,
             ).order_by("-created_at")
 
         serializer = OrganizationSerializer(organizations, many=True)
@@ -63,6 +64,7 @@ class MerchantDetailView(APIView):
             organization = Organization.objects.filter(
                 id=organization_id,
                 users__id=request.user.id,
+                is_active=True,
             ).first()
 
         if organization is None:
