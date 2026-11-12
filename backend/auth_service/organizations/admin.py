@@ -1,3 +1,21 @@
 from django.contrib import admin
 
-# Register your models here.
+from .models import Organization
+
+
+@admin.register(Organization)
+class OrganizationAdmin(admin.ModelAdmin):
+    list_display = (
+        "id",
+        "name",
+        "slug",
+        "is_active",
+        "created_at",
+    )
+    search_fields = ("name", "slug")
+    list_filter = ("is_active", "created_at")
+    readonly_fields = (
+        "organization_uuid",
+        "created_at",
+        "updated_at",
+    )
