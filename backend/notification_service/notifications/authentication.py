@@ -1,3 +1,6 @@
+
+from uuid import UUID
+
 from rest_framework.exceptions import AuthenticationFailed
 from rest_framework_simplejwt.authentication import (
     JWTStatelessUserAuthentication,
@@ -29,6 +32,13 @@ class PayFlowJWTAuthentication(JWTStatelessUserAuthentication):
         if not organization_id:
             raise AuthenticationFailed(
                 "Organization ID missing from authentication token."
+            )
+
+        try:
+            UUID(str(organization_id))
+        except (ValueError, TypeError, AttributeError):
+            raise AuthenticationFailed(
+                "Invalid organization ID in authentication token."
             )
 
         return PayFlowTokenUser(validated_token)

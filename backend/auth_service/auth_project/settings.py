@@ -152,6 +152,7 @@ SIMPLE_JWT = {
     "REFRESH_TOKEN_LIFETIME": timedelta(days=7),
     "ROTATE_REFRESH_TOKENS": True,
     "BLACKLIST_AFTER_ROTATION": True,
+    "ALGORITHM": "HS256",
     "SIGNING_KEY": JWT_SIGNING_KEY,
 }
 
@@ -172,6 +173,7 @@ CORS_ALLOWED_ORIGINS = [
 ]
 
 CORS_ALLOW_CREDENTIALS = True
+
 # Audit and application logging
 LOGGING = {
     "version": 1,
